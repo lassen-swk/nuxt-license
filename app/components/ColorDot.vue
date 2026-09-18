@@ -5,36 +5,18 @@
 
 
 <script setup>
-const props = defineProps({
-  expiry: { type: Date },
+const props = defineProps({ daysLeft: Number })
+
+const pickedColor = computed(() => {
+  if (props.daysLeft < 0) return 'pink'
+  if (props.daysLeft < 4) return 'red'
+  if (props.daysLeft < 8) return 'orange'
+  if (props.daysLeft < 15) return 'yellow'
+  if (props.daysLeft < 31) return 'green'
+  return 'blue'
 })
 
-const pickedColor = ref('blue')
-const today = new Date()
-const timeLeft = Math.ceil((props.expiry.getTime() - today.getTime()) / (1000 * 3600 * 24))
-const warning = ref(false)
-
-
-
-const changeColor = () => {
-    if (timeLeft < 31) {
-    pickedColor.value='green'
-}
-if (timeLeft < 15) {
-    pickedColor.value='yellow'
-}
-if (timeLeft < 8) {
-    pickedColor.value='orange'
-}
-if (timeLeft < 4) {
-    pickedColor.value='red'
-}
-if (timeLeft < 0) {
-    pickedColor.value='pink'
-    warning.value = true
-}
-}     
-changeColor()
+const warning = computed(() => props.daysLeft < 0)
 
 const colorMap = {
   blue: 'text-blue-500',
@@ -46,6 +28,5 @@ const colorMap = {
 }
 
 const colorClass = computed(() => colorMap[pickedColor.value])
-console.log(timeLeft, colorClass.value)
 
 </script>

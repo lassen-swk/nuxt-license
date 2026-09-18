@@ -1,8 +1,8 @@
-export function useApi<T = unknown>(
+export function useAppFetch<T = unknown>(
   endpoint: string,
   options: any = {}
 ) {
-  const  authCookie  = { value: undefined};
+  const  { authCookie } = useUser();
   const config = useRuntimeConfig();
   const baseUrl = config.public.apiBase;
 

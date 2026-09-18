@@ -1,15 +1,30 @@
 <template>
+
+    <div class="flex px-4 py-3.5 border-b border-accented space-x-5">
+      <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filter..." />
+      <UButton @click="onCreate">Neue Lizenz</UButton>
+    </div>
+
     <UTable :data="allLicenses"
     :columns="columns"
-
+    v-model:sorting="sorting"
+    v-model:global-filter="globalFilter"
+    v-model:column-visibility="columnVisibility"
+    :ui="{
+        td: 'text-black'
+    }"
     @select="onSelect"/>
-    {{ allLicenses }}
+
 
     <UModal v-model:open="modalOpen">
             <template #content>
-    <LicenseForm 
+    <LicenseForm2 
     v-model:license="currentLicense"
-     @licenseupdated="(newLicense : any) => {currentLicense = newLicense; console.log(currentLicense); refreshLicenses()}"
+     @licenseupdated="(newLicense : any) => {currentLicense = newLicense; refreshLicenses()}"
+     @licensecreated ="(newLicense : any) => {modalOpen = false; refreshLicenses()} "
+     @licensedeleted ="(formerLicense : any) => {currentLicense = undefined; modalOpen = false; refreshLicenses()} "
+     @canceled = "() => {modalOpen = false}"
+
      />
             </template>
     </UModal>
@@ -19,19 +34,17 @@
 
 
 <script setup lang="ts">
-import { modal } from '#build/ui'
-
-
-
 const {fetchAllLicenses} = UseLicense()
+const {formatDate, getDaysLeft} = useUtil()
+const today= new Date()
 
 const allLicenses = ref()
 allLicenses.value = await fetchAllLicenses()
 const refreshLicenses = async () => {
     allLicenses.value = await fetchAllLicenses()
 }
-
-const UIcon = resolveComponent('UIcon')
+const globalFilter= ref()
+const UButton = resolveComponent('UButton')
 const ColorDot = resolveComponent('ColorDot')
 
 const modalOpen = ref(false)
@@ -40,59 +53,94 @@ const currentLicense = ref()
 
 const columns = [
     {
-        header: 'Lizenz',
-        accessorKey: 'title'
+        header: ({column} : any) => getHeader(column, 'Lizenz'),
+        accessorKey: 'title',
+        id: 'title'
     },
     {
-        header: 'Eingepfl. von:',
+        header: ({column} : any) => getHeader(column, 'Eingepfl. von:'),
+        accessorFn: (row: any) => row.author?.username ?? '',
         id: 'authorName',
         cell: (row: any) => {
             // console.log(row.row.original.author)
             const author = row.row.original.author || undefined;
-            const fullName = author ? author.firstName + " " + author.lastName : '';
+            const fullName = author ? author.username : '';
             return fullName;
         }
     },
 
     {
-        header: 'Firma',
+        header: ({column} : any) => getHeader(column, 'Firma'),
         accessorKey: 'firm'
     },
 
     {
-        header: 'Läuft aus:',
+        header: ({column} : any) => getHeader(column, 'Läuft aus:'),
         id: 'expiryDate',
-                meta: {
-        class: {
-        td: 'font-mono',
+        accessorFn: (row: any) => new Date(row.expiryDate),
+        meta: {
+            class: {
+            td: 'font-mono',
       }},
         cell: (row: any) => {
-            const expiry = new Date(row.row.original.expiryDate).toLocaleDateString()
-            return h('div', { class: 'flex items-center gap-2', title : 'Tooltip' },
+            const dateObject = new Date(row.row.original.expiryDate)
+            const expiry = formatDate(dateObject)
+            const daysLeft = getDaysLeft(today, dateObject)
+            return h('div', { class: 'flex items-center gap-2', title : (daysLeft >= 0)? `Noch ${daysLeft} Tage` : 'Abgelaufen'},
             [
-            h(ColorDot, { expiry: new Date(row.row.original.expiryDate), class: '' }),
+            h(ColorDot, { daysLeft: daysLeft}),
             h('span', expiry)
             ])
 
         }
+    },
+
+    {
+        header: "Invisible",
+        id: 'sortingDate',
+        accessorFn: (row: any) => new Date(row.expiryDate).toLocaleDateString()
     }
 ]
 
+function getHeader(column : any, label: string) {
+  const isSorted = column.getIsSorted()
+  return h(UButton, {
+
+        variant: 'ghost',
+        label,
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-lucide-arrow-up-narrow-wide'
+            : 'i-lucide-arrow-down-wide-narrow'
+          : 'i-lucide-arrow-up-down',
+        class: isSorted ?  '-mx-2.5 bg-blue-200' : '-mx-2.5' , 
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
+      })
+}
+
 const sorting = ref([
   {
-    id: 'lastUpdated',
+    id: 'expiryDate',
     desc: false
   },
-
-
-
 ])
+
+const columnVisibility = ref(
+    {sortingDate : false}
+)
+
+const onCreate = () => {
+    currentLicense.value = undefined;
+    modalOpen.value = true;
+}
 
 const onSelect = (e: Event, row: any) => {
   console.log(row.original)
   currentLicense.value = row.original
   modalOpen.value = true
 }
+
+
 
 
 </script>

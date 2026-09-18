@@ -1,12 +1,12 @@
 export const UseLicense = () => {
 
     const fetchAllLicenses = async () => {
-        const res = await useApi('/license', {method: 'GET'});
+        const res = await useAppFetch('/license', {method: 'GET'});
         return res;
     };
 
     const createLicense = async (input : any) =>  {
-        const res = await useApi('/license', {
+        const res = await useAppFetch('/license', {
             method: 'POST',
             body: input
         })
@@ -15,7 +15,7 @@ export const UseLicense = () => {
     }
 
     const updateLicense = async (uuid: string, licenseData: any) => {
-        const res = await useApi(
+        const res = await useAppFetch(
             `/license/${uuid}`,
             {
                 method: 'PUT',
@@ -26,10 +26,21 @@ export const UseLicense = () => {
         return res
     }
 
+    const deleteLicense = async (uuid : string) => {
+        const res = await useAppFetch(
+            `/license/${uuid}`,
+            {
+                method: 'DELETE',
+            }
+        )
+        return res
+    }
+
 
     return {
         fetchAllLicenses,
         createLicense,
-        updateLicense
+        updateLicense,
+        deleteLicense
     }
 }

@@ -1,7 +1,11 @@
 <template>
   <aside class="flex w-60 shrink-0 flex-col bg-gray-900 p-3 text-gray-100">
     <div class="px-3 pb-6 pt-2 text-lg font-bold">
-      My App
+      SWK Lizenzvewaltung
+    </div>
+
+    <div class="px-3 pb-6 pt-2">
+      {{ currentUser ? currentUser.username : 'none'}}
     </div>
 
     <nav class="flex flex-col gap-1">
@@ -24,7 +28,11 @@
 
 
 const navItems = [
-  { label: 'Overview', to: '/', icon: 'i-lucide-layout-dashboard' },
+  { label: 'Dashboard', to: '/', icon: 'i-lucide-layout-dashboard' },
   { label: 'Lizenzen', to: '/license', icon: 'i-lucide-key-round' },
+  {label: 'Profil', to: '/profile', icon: 'i-lucide-user'},
+  {label: 'Abmelden', to: '/login', icon: 'lucide-log-out'}
 ]
+
+const {currentUser} = useUser()
 </script>
