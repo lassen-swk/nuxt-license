@@ -5,6 +5,10 @@ export default defineNuxtConfig({
     devServer: {
     port: 3001
   },
+  routeRules: {
+'/**': { cors: true }
+},
+  
   modules: ['@nuxt/ui'],
   icon: {
     clientBundle: {
