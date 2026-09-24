@@ -37,7 +37,7 @@ export const useUser = () => {
 
 
     // const response = await useAppFetch("/user/me");
-    console.log("respons:", response)
+    console.log("respons:", response.json())
     currentUser.value = response.json();
     console.log("finished refresh")
   }
