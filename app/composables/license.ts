@@ -1,8 +1,11 @@
 export const UseLicense = () => {
 
     const fetchAllLicenses = async () => {
+        try {
         const res = await useAppFetch('/license', {method: 'GET'});
         return res;
+        }
+        catch (error) {console.log(error)}
     };
 
     const createLicense = async (input : any) =>  {
