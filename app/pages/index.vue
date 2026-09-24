@@ -15,7 +15,9 @@
 <script setup lang="ts">
   const mycolor=ref('text-green-500')
   const {fetchAllLicenses, testMailSend} = UseLicense()
-  const allLicenses : any  = ref (await fetchAllLicenses()) 
+  const data = await fetchAllLicenses()
+  const allLicenses : any  = ref()
+  allLicenses.value = data 
         const toast = useToast()
   const onMailtest = async () => {
     try {
