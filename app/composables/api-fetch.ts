@@ -6,7 +6,7 @@ export function useAppFetch<T = unknown>(
   const config = useRuntimeConfig();
   const baseUrl = config.public.apiBase;
 
-  return $fetch<T>(`${baseUrl}${endpoint}`, {
+  return fetch(`${baseUrl}${endpoint}`, {
     ...options,
     headers: {
       ...(options.headers || {}),

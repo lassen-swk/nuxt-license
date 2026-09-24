@@ -8,7 +8,7 @@ export const useUser = () => {
 
   const login = async (username : string, password: string) => {
     const payload = {username, password};
-    const response = await useAppFetch("/auth/login", {body : payload, method: "POST"}) as {user : any , access_token : string};
+    const response = await useAppFetch("/auth/login", {body : payload, method: "POST"}) as any;
     if (response.user) {
     currentUser.value = response.user;
     authCookie.value = response.access_token;
