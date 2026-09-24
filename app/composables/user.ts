@@ -26,9 +26,19 @@ export const useUser = () => {
 
   const refreshUser = async () => {
     console.log("start of refresh")
-    const response = await useAppFetch("/user/me");
+    const response = await fetch('https://swk-licenses/user/me',
+      {
+        headers : {Authorization: authCookie.value ? `Bearer ${authCookie.value}` : "",
+                  "Content-Type": 'application/json'
+      }
+      }
+
+    )
+
+
+    // const response = await useAppFetch("/user/me");
     console.log("respons:", response)
-    currentUser.value = response;
+    currentUser.value = response.json();
     console.log("finished refresh")
   }
 
