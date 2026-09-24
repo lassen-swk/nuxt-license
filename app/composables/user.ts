@@ -8,7 +8,7 @@ export const useUser = () => {
 
   const login = async (username : string, password: string) => {
     const payload = {username, password};
-    const response = await useAppFetch("/auth/login", {body : payload, method: "POST"}) as any;
+    const response = await useAppFetch("/auth/login", {body : payload, method: "POST"}) as {user : any , access_token : string};
     if (response.user) {
     currentUser.value = response.user;
     authCookie.value = response.access_token;
@@ -26,19 +26,9 @@ export const useUser = () => {
 
   const refreshUser = async () => {
     console.log("start of refresh")
-    const response = await fetch('https://swk-licenses/user/me',
-      {
-        headers : {Authorization: authCookie.value ? `Bearer ${authCookie.value}` : "",
-                  "Content-Type": 'application/json'
-      }
-      }
-
-    )
-
-
-    // const response = await useAppFetch("/user/me");
-    console.log("respons:", response.json())
-    currentUser.value = response.json();
+    const response = await useAppFetch("/user/me");
+    console.log("respons:", response)
+    currentUser.value = response;
     console.log("finished refresh")
   }
 
