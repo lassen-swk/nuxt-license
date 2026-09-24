@@ -5,6 +5,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     console.log("middleware starting", authCookie.value)
     if (to.path === "/login") {
         currentUser.value = undefined
+        console.log("Already at login")
         return;
     }
 
