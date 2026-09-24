@@ -18,6 +18,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             return navigateTo("/login");
         }
     } else {
+        console.log("cookie never found")
         currentUser.value = undefined;
         return navigateTo("/login");
     }
