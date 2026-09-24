@@ -36,11 +36,22 @@ export const UseLicense = () => {
         return res
     }
 
+    const testMailSend = async () => {
+        const res = await useAppFetch(
+            '/license/mailtest',
+            {
+                method: 'POST'
+            }
+        )
+        return res
+    }
+
 
     return {
         fetchAllLicenses,
         createLicense,
         updateLicense,
-        deleteLicense
+        deleteLicense,
+        testMailSend
     }
 }

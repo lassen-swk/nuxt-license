@@ -13,7 +13,7 @@
       <UInput v-model="state.password" type="password" />
     </UFormField>
 
-    <UButton type="submit">
+    <UButton type="submit" class="cursor-pointer">
       Anmelden
     </UButton>
   </UForm>

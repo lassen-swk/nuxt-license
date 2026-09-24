@@ -2,7 +2,7 @@
 
     <div class="flex px-4 py-3.5 border-b border-accented space-x-5">
       <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filter..." />
-      <UButton @click="onCreate">Neue Lizenz</UButton>
+      <UButton @click="onCreate" class="cursor-pointer">Neue Lizenz</UButton>
     </div>
 
     <UTable :data="allLicenses"
@@ -11,6 +11,8 @@
     v-model:global-filter="globalFilter"
     v-model:column-visibility="columnVisibility"
     :ui="{
+        th : 'cursor-default',
+        tr : 'cursor-pointer',
         td: 'text-black'
     }"
     @select="onSelect"/>
@@ -23,7 +25,7 @@
      @licenseupdated="(newLicense : any) => {currentLicense = newLicense; refreshLicenses()}"
      @licensecreated ="(newLicense : any) => {modalOpen = false; refreshLicenses()} "
      @licensedeleted ="(formerLicense : any) => {currentLicense = undefined; modalOpen = false; refreshLicenses()} "
-     @canceled = "() => {modalOpen = false}"
+     @canceled = "(sameLicense : any) => {currentLicense = sameLicense}"
 
      />
             </template>
@@ -113,7 +115,7 @@ function getHeader(column : any, label: string) {
             ? 'i-lucide-arrow-up-narrow-wide'
             : 'i-lucide-arrow-down-wide-narrow'
           : 'i-lucide-arrow-up-down',
-        class: isSorted ?  '-mx-2.5 bg-blue-200' : '-mx-2.5' , 
+        class: isSorted ?  '-mx-2.5 bg-blue-200 cursor-pointer' : '-mx-2.5 cursor-pointer' , 
         onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
       })
 }

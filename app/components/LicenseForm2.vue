@@ -62,25 +62,25 @@
     <div> {{ state.authorName }} </div>
     </UFormField>
 
-
+    {{ dateObjectRef.toLocaleDateString() }}
         <div class="flex space-x-5 ">
-    <UButton v-if="!editing && !creating" type="button" @click="() => editing = true">
+    <UButton v-if="!editing && !creating" type="button" @click="() => editing = true" class="cursor-pointer">
       Bearbeiten
     </UButton>
 
-    <UButton v-if="editing" type="submit">
+    <UButton v-if="editing" type="submit" class="cursor-pointer">
       Änderungen Speichern
     </UButton>
 
-    <UButton v-if="creating" type="submit">
+    <UButton v-if="creating" type="submit" class="cursor-pointer">
       Lizenz Speichern 
     </UButton>
 
-    <UButton v-if="!creating" color="error" @click="() => {modalOpen = true}">
+    <UButton v-if="!creating" color="error" @click="() => {modalOpen = true}" class="cursor-pointer">
       Löschen
     </UButton>
 
-    <UButton v-if="editing || creating" @click="onCancel">
+    <UButton v-if="editing || creating" @click="onCancel" class="cursor-pointer">
       Abbrechen
     </UButton>
 
@@ -108,6 +108,9 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 const props = defineProps(['license'])
 const emit = defineEmits(["licenseupdated", "licensecreated", "licensedeleted", "canceled"])
 const dateObjectRef = ref(computed (() => props.license ? new Date(props.license.expiryDate) : new Date()))
+const originalExpiryISO = props.license
+  ? new Date(props.license.expiryDate).toISOString().split('T')[0]
+  : '';
 
 const editing = ref(false)
 const creating =ref(props.license ? false : true)
@@ -128,7 +131,7 @@ const myvar = new Date().toISOString().split('T')[0]
 const state = reactive({
   title : props.license ? props.license.title : '',
   firm: props.license ? props.license.firm : '',
-  expiryISO: props.license ? dateObjectRef.value.toISOString().split('T')[0] as string : '',
+  expiryISO: originalExpiryISO as string,
   info: props.license ? props.license.info : '',
   daysLeft : computed ( () => getDaysLeft(today, dateObjectRef.value) ) ,
   authorName: props.license ? props.license.author.username : ''
@@ -175,7 +178,14 @@ async function onCreate() {
 }
 
 function onCancel() {
-  emit("canceled")
+  console.log("cancel?")
+  state.title=props.license.title;
+  state.info = props.license.info
+  state.firm = props.license.firm
+  state.expiryISO = originalExpiryISO as string
+  editing.value = false
+  creating.value = false
+  emit("canceled", props.license)
 }
 
 async function onDelete() {
