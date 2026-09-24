@@ -26,10 +26,17 @@ export const useUser = () => {
 
   const refreshUser = async () => {
     console.log("start of refresh")
+    try {
     const response = await useAppFetch("/user/me");
-    console.log("respons:", response)
+    console.log("respons:", response);
     currentUser.value = response;
-    console.log("finished refresh")
+    }
+    catch (error) {
+      console.log('refresh failed')
+      console.log(error)
+    }
+
+
   }
 
   const fetchAllUsers = async () => {
