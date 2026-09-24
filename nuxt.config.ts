@@ -31,5 +31,23 @@ export default defineNuxtConfig({
   public: {
   apiBase: '' // Overridden by NUXT_PUBLIC_API_BASE
 }
-}
+},
+
+ vite: {
+
+    server: {
+
+      host: true, // bindet an alle Interfaces
+
+      port: 3001,
+
+      strictPort: true,
+
+      allowedHosts: ["swk-licenses", "swk-licenses.median-bk.de"],
+// interne Hosts erlauben
+
+    },
+
+  },
+
 })
