@@ -28,6 +28,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
   apiSecret: '', // Overridden by NUXT_API_SECRET
+  apiBase: '',  // NUXT_API_BASE
   public: {
   apiBase: '' // Overridden by NUXT_PUBLIC_API_BASE
 }
