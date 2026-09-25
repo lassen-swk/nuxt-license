@@ -13,8 +13,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         try {
             await refreshUser();
         } catch {
-            // currentUser.value = undefined;
-            // authCookie.value = undefined;
+            currentUser.value = undefined;
+            authCookie.value = undefined;
             console.log("Refresh failed")
             return navigateTo("/login");
         }
