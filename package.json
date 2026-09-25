@@ -29,6 +29,8 @@
     "@tiptap/starter-kit": "^3.29.2",
     "@tiptap/suggestion": "^3.29.2",
     "@tiptap/vue-3": "^3.29.2",
+    "@vueuse/components": "^15.0.0",
+    "@vueuse/core": "^15.0.0",
     "chart.js": "^4.5.1",
     "nuxt": "^4.5.1",
     "tailwindcss": "^4.3.3",

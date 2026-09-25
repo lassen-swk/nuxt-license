@@ -51,6 +51,19 @@
       <div v-else>{{ state.firm }} </div>
     </UFormField>
 
+    <UFormField label="Lizenzschlüssel" name="key">
+    <UInput v-if="editing || creating" v-model="state.key"/>
+    <div  class="align-center" v-else>
+        <UseClipboard v-slot="{ copy, copied }" :source="state.key">
+            <UButton v-if="(state.key != '')" class="cursor-pointer" @click="copy(); testCopy(copied)">
+              <UIcon name="lucide-copy" class="h-[18px] w-[18px]" />
+            </UButton>
+          </UseClipboard>
+
+       {{ state.key }}
+    </div>
+    </UFormField>
+
 
     <UFormField label="Info" name="info">
         <UTextarea v-if="editing || creating" v-model="state.info" class="w-full"
@@ -59,7 +72,11 @@
     </UFormField>
 
     <UFormField v-if="!editing && !creating" label="Eingepflegt von" name="author">
-    <div> {{ state.authorName }} </div>
+    <div>
+       {{ state.authorName }}      
+      </div>
+
+
     </UFormField>
 
     {{ dateObjectRef.toLocaleDateString() }}
@@ -104,6 +121,7 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import { UseClipboard } from '@vueuse/components'
 
 const props = defineProps(['license'])
 const emit = defineEmits(["licenseupdated", "licensecreated", "licensedeleted", "canceled"])
@@ -134,7 +152,8 @@ const state = reactive({
   expiryISO: originalExpiryISO as string,
   info: props.license ? props.license.info : '',
   daysLeft : computed ( () => getDaysLeft(today, dateObjectRef.value) ) ,
-  authorName: props.license ? props.license.author.username : ''
+  authorName: props.license ? props.license.author.username : '',
+  key : props.license ? props.license.key : ''
 })
 
 const toast = useToast()
@@ -151,6 +170,7 @@ async function onUpdated() {
       firm: state.firm,
       expiryDate: new Date(state.expiryISO),
       info: state.info,
+      key: state.key,
     }
   const newLicense = await updateLicense(props.license.id, input)
   if (newLicense) {
@@ -167,6 +187,7 @@ async function onCreate() {
       firm: state.firm,
       expiryDate: new Date(state.expiryISO),
       info: state.info,
+      key: state.key,
       authorId: currentUser.value.id
     }
     const newLicense = await createLicense(input)
@@ -199,4 +220,14 @@ async function onDelete() {
 
 }
 
+const testCopy = (copied : boolean) => {
+  if (copied) {
+    toast.add(
+      {title: 'Lizenzschlüssel in Zwischenablage kopiert'
+      }
+    )
+  }
+}
+
 </script>
+

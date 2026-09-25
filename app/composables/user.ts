@@ -34,6 +34,7 @@ export const useUser = () => {
     catch (error) {
       console.log('refresh failed')
       console.log(error)
+      throw error
     }
 
 
