@@ -55,7 +55,7 @@
     <UInput v-if="editing || creating" v-model="state.key"/>
     <div  class="align-center" v-else>
         <UseClipboard v-slot="{ copy, copied }" :source="state.key">
-            <UButton v-if="(state.key != '')" class="cursor-pointer" @click="copy(); testCopy(copied)">
+            <UButton v-if="(state.key != '')" class="cursor-pointer" @click="copyKey(copy)">
               <UIcon name="lucide-copy" class="h-[18px] w-[18px]" />
             </UButton>
           </UseClipboard>
@@ -220,13 +220,9 @@ async function onDelete() {
 
 }
 
-const testCopy = (copied : boolean) => {
-  if (copied) {
-    toast.add(
-      {title: 'Lizenzschlüssel in Zwischenablage kopiert'
-      }
-    )
-  }
+const copyKey = async (copy: () => Promise<void>) => {
+  await copy()
+  toast.add({ title: 'Lizenzschlüssel in Zwischenablage kopiert' })
 }
 
 </script>
